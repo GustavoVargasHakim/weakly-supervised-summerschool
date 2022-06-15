@@ -14,9 +14,9 @@ from .utils import simplex, sset
 
 
 class CrossEntropy():
-    def __init__(self, idk, **kwargs):
+    def __init__(self, **kwargs):
         # Self.idk is used to filter out some classes of the target mask. Use fancy indexing
-        self.idk = idk
+        self.idk = kwargs['idk']
         print(f"Initialized {self.__class__.__name__} with {kwargs}")
 
     def __call__(self, pred_softmax, weak_target):
@@ -48,7 +48,7 @@ class NaiveSizeLoss():
     """
     def __init__(self, **kwargs):
         # Self.idk is used to filter out some classes of the target mask. Use fancy indexing
-        self.idk = [1]
+        self.idk = kwargs['idk']
         print(f"Initialized {self.__class__.__name__} with {kwargs}")
 
     def __call__(self, pred_softmax, bounds):
@@ -70,8 +70,6 @@ class NaiveSizeLoss():
 
         return loss
 
-
-# Quadratic penalty
 class ParametrableQuadraticPenalty():
     """
     This one implement the naive quadratic penalty
@@ -80,7 +78,7 @@ class ParametrableQuadraticPenalty():
     """
     def __init__(self, **kwargs):
         # Self.idk is used to filter out some classes of the target mask. Use fancy indexing
-        self.idk = [1]
+        self.idk = kwargs['idk']
         self.function: Callable[[Tensor], Tensor] = kwargs["function"]
         print(f"Initialized {self.__class__.__name__} with {kwargs}")
 
@@ -103,9 +101,9 @@ class ParametrableQuadraticPenalty():
         loss /= (W * H)
 
         return loss.sum()
+    
 
-
-# With a log-barrier in place of quadratic penalty
+# Quadratic penalty
 class ParametrableLogBarrier():
     """
     This one implement the naive quadratic penalty
@@ -114,7 +112,7 @@ class ParametrableLogBarrier():
     """
     def __init__(self, **kwargs):
         # Self.idk is used to filter out some classes of the target mask. Use fancy indexing
-        self.idk = [1]
+        self.idk = kwargs['idk']
         self.function: Callable[[Tensor], Tensor] = kwargs["function"]
         self.t: float = 1
         print(f"Initialized {self.__class__.__name__} with {kwargs}")
